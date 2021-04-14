@@ -3,7 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2021-04-14
 # @Contact    : qichun.tang@bupt.edu.cn
-from nn import Linear, Tanh, MSE, SGD, Mynet
+from mytorch.nn import SGD, Mynet
 import numpy as np
 
 np.random.seed(0)
@@ -17,9 +17,6 @@ y = np.sin(X)
 X = StandardScaler().fit_transform(X)
 optimizer = SGD(mynet.parameters(), lr=0.1)
 for epoch in range(1000):
-    # running_loss = []
-    # preds = []
-    # for i in range(100):
     optimizer.zero_grad()
     input = X
     label = y
