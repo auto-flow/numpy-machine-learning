@@ -32,6 +32,16 @@ class Variable(object):
         self.bgrad = bgrad
 
 
+def mul(A: np.ndarray, B: np.ndarray):
+    # A: 100x9  B: 100x1
+    # AxB = 100x9x1
+    na = A.shape[1]
+    nb = B.shape[1]
+    A = np.repeat(A[:, :, np.newaxis], nb, 2)
+    B = np.repeat(B[:,  np.newaxis,:], na, 1)
+    return A * B
+
+
 class Linear(Module):
     def __init__(self, inplanes, outplanes, preweight=None):
         super(Linear, self).__init__()
@@ -49,17 +59,16 @@ class Linear(Module):
     def parameters(self):
         return self.variable
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         self.input = x
         # Z = XW + b
         self.output = np.dot(self.input, self.weight) + self.bias
         return self.output
 
     def backward(self, grad):
-        self.bgrad = grad
+        self.bgrad = np.mean(grad, axis=0)
         # dL/dW =  dL/dZ * dZ/dW = X * dL/dZ
-        self.wgrad += np.dot(self.input.T, grad)
+        self.wgrad += np.mean(mul(self.input, grad), axis=0)
         # dL/dX = dL/dZ * W
         # 相当于用权重W对梯度grad做线性变换，将梯度传到上一层的神经元
         grad = np.dot(grad, self.weight.T)
@@ -72,8 +81,7 @@ class Relu(Module):
         self.input = None
         self.output = None
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         self.input = x
         x[self.input <= 0] *= 0
         self.output = x
@@ -91,8 +99,7 @@ class Sigmoid(Module):
         self.input = None
         self.output = None
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         self.input = x
         self.output = 1 / (1 + np.exp(-self.input))
         return self.output
@@ -108,8 +115,7 @@ class Tanh(Module):
         self.input = None
         self.output = None
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         self.input = x
         self.output = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
         return self.output
@@ -134,8 +140,7 @@ class Sequence(Module):
     def add_layer(self, layer):
         self.layers.append(layer)
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         for layer in self.layers:
             x = layer(x)
         return x
@@ -153,7 +158,7 @@ class Mynet(Module):
         super(Mynet, self).__init__()
         self.layers = Sequence(
             Linear(inplanes, n_hidden),
-            Relu(),
+            Tanh(),
             Linear(n_hidden, outplanes)
         )
         self.criterion = MSE()
@@ -161,8 +166,7 @@ class Mynet(Module):
     def parameters(self):
         return self.layers.parameters()
 
-    def forward(self, *x):
-        x = x[0]
+    def forward(self, x):
         return self.layers.forward(x)
 
     def backward(self, grad=None):
@@ -182,13 +186,12 @@ class MSE(object):
 
     def forward(self, pred, label):
         self.pred, self.label = pred, label
-        self.loss = np.sum(0.5 * np.square(self.pred - self.label))
+        self.loss = np.mean(0.5 * np.square(self.pred - self.label))
         return self.loss
 
     def backward(self, grad=None):
         self.grad = (self.pred - self.label)
-        ret_grad = np.sum(self.grad, axis=0)
-        return np.expand_dims(ret_grad, axis=0)
+        return self.grad
 
 
 class SGD(object):
