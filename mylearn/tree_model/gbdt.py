@@ -9,7 +9,7 @@ from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 from sklearn.preprocessing import OneHotEncoder
 
 
-class GradientBoost(BaseEstimator):
+class GradientBoosting(BaseEstimator):
     def __init__(self, n_estimators=10, learning_rate=0.1, max_depth=5):
         self.max_depth = max_depth
         self.n_estimators = n_estimators
@@ -62,7 +62,7 @@ def sigmoid(t):
     return 1 / (1 + np.exp(-t))
 
 
-class GradientBoostRegressor(GradientBoost, RegressorMixin):
+class GradientBoostingRegressor(GradientBoosting, RegressorMixin):
     def preprocess_y(self, y):
         return y[:, np.newaxis]
 
@@ -73,7 +73,7 @@ class GradientBoostRegressor(GradientBoost, RegressorMixin):
         return predictions.flatten()
 
 
-class GradientBoostClassifier(GradientBoost, ClassifierMixin):
+class GradientBoostingClassifier(GradientBoosting, ClassifierMixin):
     def preprocess_y(self, y):
         return OneHotEncoder(sparse=False, dtype="int32").fit_transform(y[:, np.newaxis])
 

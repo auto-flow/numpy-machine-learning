@@ -1,0 +1,56 @@
+##################################################
+{'n_estimators': 10, 'learning_rate': 0.1}
+##################################################
+My GradientBoostingClassifier:
+[0.96666667 1.         0.86666667 0.9        1.        ]
+cost time = 12.530
+
+Sklearn GradientBoostingClassifier:
+[0.96666667 0.96666667 0.9        0.93333333 1.        ]
+cost time = 0.155
+
+My GradientBoostingRegressor:
+[-0.80609871 -0.16571655 -1.29044292  0.0102615  -0.56012307]
+cost time = 69.577
+
+Sklearn GradientBoostingRegressor:
+[ 0.6374447   0.6999573   0.25156843  0.33267666 -0.19160135]
+cost time = 0.071
+
+##################################################
+{'n_estimators': 10, 'learning_rate': 1}
+##################################################
+My GradientBoostingClassifier:
+[0.96666667 1.         0.86666667 0.9        1.        ]
+cost time = 12.495
+
+Sklearn GradientBoostingClassifier:
+[0.96666667 0.96666667 0.9        0.96666667 1.        ]
+cost time = 0.150
+
+My GradientBoostingRegressor:
+[ 0.66536124  0.63716973  0.51465205  0.55595112 -1.22753932]
+cost time = 66.141
+
+Sklearn GradientBoostingRegressor:
+[ 0.62534508  0.73945743  0.37195099  0.47302651 -0.47830776]
+cost time = 0.072
+
+##################################################
+{'n_estimators': 20, 'learning_rate': 0.5}
+##################################################
+My GradientBoostingClassifier:
+[0.96666667 1.         0.86666667 0.9        1.        ]
+cost time = 25.001
+
+Sklearn GradientBoostingClassifier:
+[0.96666667 0.96666667 0.9        0.96666667 1.        ]
+cost time = 0.291
+
+My GradientBoostingRegressor:
+[ 0.68309069  0.80492864  0.62825514  0.58103319 -0.02082281]
+cost time = 133.914
+
+Sklearn GradientBoostingRegressor:
+[0.70614255 0.86126125 0.55271479 0.52455557 0.40823033]
+cost time = 0.131
