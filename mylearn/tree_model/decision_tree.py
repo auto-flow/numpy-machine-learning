@@ -4,8 +4,10 @@
 # @Date    : 2021-04-17
 # @Contact    : qichun.tang@bupt.edu.cn
 from collections import Counter
-import numpy as np
+from collections import defaultdict
 from heapq import heappush, heappop
+
+import numpy as np
 from sklearn.base import ClassifierMixin, RegressorMixin, BaseEstimator
 
 
@@ -41,6 +43,24 @@ def classification_leaf_value_func(y):
 
 def regression_leaf_value_func(y):
     return np.mean(y)
+
+
+class DataStatistic():
+    class FeatureStatistic():
+        def __init__(self, bin_id_to_stats, split_vals):
+            self.bin_id_to_stats = bin_id_to_stats
+            self.split_vals = split_vals
+
+    def __init__(self, X, y):
+        # 一个列表，长度为特征数M，每个元素为一个dict，key为特征取值所在的bin_id，value为这个bin_id对应的y的统计值
+        self.feat_stat = []
+        for feat_j in range(X.shape[1]):
+            stat = defaultdict(list)
+            for inst_i in range(X.shape[0]):
+                stat[X[inst_i, feat_j]].append(y[inst_i])
+            feat_vals = np.array(sorted(list(stat)))
+            split_vals = (feat_vals[1:] + feat_vals[:1]) / 2
+
 
 
 class TreeNode:
